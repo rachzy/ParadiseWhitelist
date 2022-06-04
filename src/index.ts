@@ -13,8 +13,13 @@ client.on("messageCreate", async (message: Message) => {
   if (author.bot || !content.startsWith(prefix)) return;
 
   const command = content.replace(prefix, "");
-  if (command === "ping") {
-    message.channel.send("Pong!");
+  try {
+      const commandExec = require(`./commands/${command}`);
+      commandExec.run(client, message);
+  } catch(err: any) {
+      if(err.code === "MODULE_NOT_FOUND") return;
+      console.log(err);
+      message.reply("Desculpe, ocorreu um erro ao executar esse comando");
   }
 });
 
